@@ -65,7 +65,30 @@
 
     <p class="footnote">Нажимая «Войти», вы соглашаетесь с условиями сервиса и политикой конфиденциальности.</p>
   </main>
+ <!-- Подключаем Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, GithubAuthProvider, OAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
+    const firebaseConfig = {
+      apiKey: "AIzaSyBwnJzdrFm9q-_jrtHIU7eL9mh3sKcrQ7Y",
+      authDomain: "ricardo-baf80.firebaseapp.com",
+      projectId: "ricardo-baf80",
+      storageBucket: "ricardo-baf80.firebasestorage.app",
+      messagingSenderId: "340720010609",
+      appId: "1:340720010609:web:3f4d6ee7f9f699896ae2d0",
+      measurementId: "G-BPXVGCN2L1"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Делаем доступным для script.js
+    window.firebaseAuth = auth;
+    window.firebaseProviders = { GoogleAuthProvider, GithubAuthProvider, OAuthProvider };
+    window.firebaseSignIn = signInWithPopup;
+  </script>
+
+  <!-- Ваш основной скрипт -->
   <script src="script.js"></script>
 </body>
-</html>
