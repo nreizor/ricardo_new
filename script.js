@@ -77,4 +77,90 @@ function showToast(message) {
     toast.style.transform = 'translateX(-50%) translateY(-20px)';
     setTimeout(() => toast.remove(), 300);
   }, 2500);
+  // ====== Рикардо ======
+const ricardoBg  = document.getElementById('ricardoBg');
+const ricardoImg = document.getElementById('ricardoImg');
+
+let danceTimer = null;
+
+function startDance() {
+  ricardoBg.classList.add('dancing');
+  clearTimeout(danceTimer);
+  danceTimer = setTimeout(() => {
+    ricardoBg.classList.remove('dancing');
+  }, 3000);
+}
+
+ricardoBg.addEventListener('click', () => {
+  startDance();
+});
+
+// ====== Кнопки входа ======
+document.querySelectorAll('.btn').forEach((btn) => {
+  btn.addEventListener('click', async () => {
+    const providerName = btn.dataset.provider; // "Google", "Apple", "GitHub"
+    
+    // Выбираем нужный провайдер
+    let provider;
+    if (providerName === "Google") {
+      provider = new window.firebaseProviders.GoogleAuthProvider();
+    } else if (providerName === "GitHub") {
+      provider = new window.firebaseProviders.GithubAuthProvider();
+    } else if (providerName === "Apple") {
+      provider = new window.firebaseProviders.OAuthProvider('apple.com');
+    }
+
+    try {
+      // Открываем всплывающее окно входа Firebase
+      const result = await window.firebaseSignIn(window.firebaseAuth, provider);
+      const user = result.user;
+      console.log("Успешный вход:", user.displayName, user.email);
+      
+      // Показываем приветствие
+      showToast(`Привет, ${user.displayName || user.email}!`);
+      
+      // Запускаем Рикардо в честь успеха
+      startDance();
+      
+    } catch (error) {
+      console.error("Ошибка входа:", error.message);
+      showToast(`Ошибка: ${error.message}`);
+    }
+  });
+});
+
+// ====== Всплывающее уведомление ======
+function showToast(message) {
+  const toast = document.createElement('div');
+  toast.textContent = message;
+  toast.style.cssText = `
+    position: fixed;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    background: rgba(30, 30, 30, 0.95);
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.15);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    z-index: 100;
+    opacity: 0;
+    transition: opacity .3s ease, transform .3s ease;
+    box-shadow: 0 10px 30px rgba(0,0,0,.5);
+  `;
+  document.body.appendChild(toast);
+
+  requestAnimationFrame(() => {
+    toast.style.opacity = '1';
+    toast.style.transform = 'translateX(-50%) translateY(0)';
+  });
+
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(-50%) translateY(-20px)';
+    setTimeout(() => toast.remove(), 300);
+  }, 2500);
+}
 }
